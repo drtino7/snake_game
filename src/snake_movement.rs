@@ -9,83 +9,108 @@ lazy_static! {
     pub static ref CARDINAL_POINT: Mutex<String> = Mutex::new(String::from("south"));
 }
 
+
+
+pub fn move_up(game: &Mutex<[[Definitions;GAME_LEN];GAME_LEN]>) {
+    let game_guard = game.lock().unwrap();
+    for (i,_) in game_guard.iter().enumerate() {
+        for (j,_) in game_guard.iter().enumerate() {
+            if let Definitions::SnakeHead((i_,j_)) = game_guard[i][j]{
+                match game_guard[i-1][j]{
+                    Definitions::Snake((_,_)) => {
+                        if (i-1,j) == (i_,j_) {
+                            /* lose(); */
+                        }
+                    },
+                    Definitions::Nothing => {
+                        *CARDINAL_POINT.lock().unwrap() = "north".to_string();
+                    },
+                    Definitions::Apple => {
+                        /* eat_apple(); */
+                    },
+                    _ => panic!(),
+                    
+                }
+            }
+        }
+    }
+}
+
+pub fn move_down(game: &Mutex<[[Definitions;GAME_LEN];GAME_LEN]>) {
+    let game_guard = game.lock().unwrap();
+    for (i,_) in game_guard.iter().enumerate() {
+        for (j,_) in game_guard.iter().enumerate() {
+            if let Definitions::SnakeHead((i_,j_)) = game_guard[i][j]{
+                match game_guard[i+1][j]{
+                    Definitions::Snake((_,_)) => {
+                        if (i+1,j) == (i_,j_) {
+                            /* lose(); */
+                        }
+                    },
+                    Definitions::Nothing => {
+                        *CARDINAL_POINT.lock().unwrap() = "south".to_string();
+                    },
+                    Definitions::Apple => {
+                        /* eat_apple(); */
+                    },
+                    _ => panic!(),
+                    
+                }
+            }
+        }
+    }
+}
+
 pub fn move_left(game: &Mutex<[[Definitions;GAME_LEN];GAME_LEN]>) {
     let game_guard = game.lock().unwrap();
-
     for (i,_) in game_guard.iter().enumerate() {
         for (j,_) in game_guard.iter().enumerate() {
-            if let  Definitions::SnakeHead((_,_)) = game_guard[i][j] {
-                let mut card = CARDINAL_POINT.lock().unwrap();
-                match card.as_str() {   
-                    "south" => {
-                        match game_guard[i][j+1] {
-                            Definitions::Snake((_,_)) => {},
-                            _ => { *card =  "west".to_string();},
+            if let Definitions::SnakeHead((i_,j_)) = game_guard[i][j]{
+                match game_guard[i][j-1]{
+                    Definitions::Snake((_,_)) => {
+                        if (i,j-1) == (i_,j_) {
+                            /* lose(); */
                         }
-                    }
-                    "north" => {
-                        match game_guard[i][j-1] {
-                            Definitions::Snake((_,_)) => {},
-                            _ => { *card =  "east".to_string();},
-                        }
-                    }
-                    "west" => {
-                        match game_guard[i-1][j] {
-                            Definitions::Snake((_,_)) => {},
-                            _ => { *card =  "north".to_string();},
-                        }
-                    }
-                    "east" => {
-                        match game_guard[i+1][j] {
-                            Definitions::Snake((_,_)) => {},
-                            _ => { *card =  "south".to_string();},
-                        }
-                    }
+                    },
+                    Definitions::Nothing => {
+                        *CARDINAL_POINT.lock().unwrap() = "west".to_string();
+                    },
+                    Definitions::Apple => {
+                        /* eat_apple(); */
+                    },
                     _ => panic!(),
+                    
                 }
             }
         }
     }
 }
-
 pub fn move_right(game: &Mutex<[[Definitions;GAME_LEN];GAME_LEN]>) {
     let game_guard = game.lock().unwrap();
-
     for (i,_) in game_guard.iter().enumerate() {
         for (j,_) in game_guard.iter().enumerate() {
-            if let  Definitions::SnakeHead((_,_)) = game_guard[i][j] {
-                let mut card = CARDINAL_POINT.lock().unwrap();
-                match card.as_str() {   
-                    "south" => {
-                        match game_guard[i][j-1] {
-                            Definitions::Snake((_,_)) => {},
-                            _ => { *card =  "east".to_string();},
+            if let Definitions::SnakeHead((i_,j_)) = game_guard[i][j]{
+                match game_guard[i][j+1]{
+                    Definitions::Snake((_,_)) => {
+                        if (i,j+1) == (i_,j_) {
+                            /* lose(); */
                         }
-                    }
-                    "north" => {
-                        match game_guard[i][j+1] {
-                            Definitions::Snake((_,_)) => {},
-                            _ => { *card =  "west".to_string();},
-                        }
-                    }
-                    "west" => {
-                        match game_guard[i+1][j] {
-                            Definitions::Snake((_,_)) => {},
-                            _ => { *card =  "south".to_string();},
-                        }
-                    }
-                    "east" => {
-                        match game_guard[i-1][j] {
-                            Definitions::Snake((_,_)) => {},
-                            _ => { *card =  "north".to_string();},
-                        }
-                    }
+                    },
+                    Definitions::Nothing => {
+                        *CARDINAL_POINT.lock().unwrap() = "east".to_string();
+                    },
+                    Definitions::Apple => {
+                        /* eat_apple(); */
+                    },
                     _ => panic!(),
+                    
                 }
             }
         }
     }
 }
+
+
  
 pub fn snake_move(game: &Mutex<[[Definitions;GAME_LEN];GAME_LEN]>) {
     let card = CARDINAL_POINT.lock().unwrap();

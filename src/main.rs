@@ -30,7 +30,8 @@ fn main() {
 
                         KeyCode::Left => snake_movement::move_left(&g1),
                         KeyCode::Right => snake_movement::move_right(&g1),                                             
-                        
+                        KeyCode::Up => snake_movement::move_up(&g1),
+                        KeyCode::Down => snake_movement::move_down(&g1),
                         _ => (),
                     }
                 }
