@@ -9,7 +9,6 @@ use crate::create_game::GAME_LEN;
 
 mod snake_movement;
 mod create_game;
-mod snake;
 mod game_definitions;
 mod print;
 
