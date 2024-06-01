@@ -1,11 +1,5 @@
-use std::sync::{Mutex, Arc};
 use crossterm::event::KeyCode;
-use snake_movement::CARDINAL_POINT;
 use std::time::Duration;
-use lazy_static::lazy_static;
-
-use crate::create_game::GAME_LEN;
-
 
 mod snake_movement;
 mod create_game;
@@ -19,7 +13,6 @@ fn main() {
     let g1 = game.clone();
     let g2 = game.clone();
     let g3 = game.clone();
-    let g4 = game.clone();
     let handle_1 = std::thread::spawn(move || {
         loop{
             while let Ok(event_result) = crossterm::event::poll(Duration::from_millis(100)){
@@ -49,7 +42,7 @@ fn main() {
     let handle_3 = std::thread::spawn(move || {
         loop{
             snake_movement::snake_move(&g3);
-            std::thread::sleep(std::time::Duration::from_millis(3000));
+            std::thread::sleep(std::time::Duration::from_millis(1500));
         }
     });
     

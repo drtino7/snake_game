@@ -4,7 +4,6 @@ use rand::{self, Rng};
 
 use crate::game_definitions::Definitions;
 use crate::create_game::GAME_LEN;
-use crate::print::print;
 
 lazy_static! {
     pub static ref CARDINAL_POINT: Mutex<String> = Mutex::new(String::from("south"));
@@ -150,11 +149,17 @@ pub fn snake_move(game: &Arc<Mutex<[[Definitions;GAME_LEN];GAME_LEN]>>) {
                     game_guard[i][j] = Definitions::Nothing;
                 }
             }
-            if let Definitions::SnakeHead((i_,j_)) = game_guard[i][j]{
+            if let Definitions::SnakeHead((_,_)) = game_guard[i][j]{
                 if head == false{
                     head = true;
 
                     if *card == "south".to_string() {
+                        
+                            if i == 15 {
+                                lose();
+                            }
+
+
                             if let Definitions::Apple = game_guard[i+1][j] {
                                 game_guard[i+1][j] = Definitions::SnakeHead((i,j));
                                 game_guard[i][j] = Definitions::Snake((i+1,j));
@@ -165,7 +170,21 @@ pub fn snake_move(game: &Arc<Mutex<[[Definitions;GAME_LEN];GAME_LEN]>>) {
                                         if flag == false{
                                         if let Definitions::Tail((_,_)) = game_guard[i][j] {
                                             if i > 0 && i < GAME_LEN{
-                                                game_guard[i-1][j] = Definitions::Tail((i,j));
+
+                                                if let Definitions::Nothing = game_guard[i-1][j] {
+                                                    game_guard[i-1][j] = Definitions::Tail((i,j));
+                                                }
+                                                else {   
+                                                    if let Definitions::Nothing = game_guard[i+1][j] {
+                                                        game_guard[i+1][j] = Definitions::Tail((i,j));
+                                                    }
+                                                    if let Definitions::Nothing = game_guard[i][j-1] {
+                                                        game_guard[i][j-1] = Definitions::Tail((i,j));
+                                                    }
+                                                    if let Definitions::Nothing = game_guard[i][j+1] {
+                                                        game_guard[i][j+1] = Definitions::Tail((i,j));
+                                                    }
+                                                }
                                                 match game_guard[i][j]{
                                                     Definitions::Tail((i_,j_)) => {
                                                         game_guard[i][j] = Definitions::Snake((i_,j_));
@@ -205,6 +224,9 @@ pub fn snake_move(game: &Arc<Mutex<[[Definitions;GAME_LEN];GAME_LEN]>>) {
 
                     }
                         if *card == "north".to_string() {
+                            if i == 0 {
+                                lose();
+                            }
                             if let Definitions::Apple = game_guard[i-1][j] {
                                 game_guard[i-1][j] = Definitions::SnakeHead((i,j));
                                 game_guard[i][j] = Definitions::Snake((i-1,j));
@@ -216,7 +238,22 @@ pub fn snake_move(game: &Arc<Mutex<[[Definitions;GAME_LEN];GAME_LEN]>>) {
                                         if flag == false{
                                         if let Definitions::Tail((_,_)) = game_guard[i][j] {
                                             if i > 0 && i < GAME_LEN-1{
-                                                game_guard[i+1][j] = Definitions::Tail((i,j));
+                                                
+                                                if let Definitions::Nothing = game_guard[i+1][j] {
+                                                    game_guard[i+1][j] = Definitions::Tail((i,j));
+                                                }
+                                                else {   
+                                                    if let Definitions::Nothing = game_guard[i-1][j] {
+                                                        game_guard[i-1][j] = Definitions::Tail((i,j));
+                                                    }
+                                                    if let Definitions::Nothing = game_guard[i][j-1] {
+                                                        game_guard[i][j-1] = Definitions::Tail((i,j));
+                                                    }
+                                                    if let Definitions::Nothing = game_guard[i][j+1] {
+                                                        game_guard[i][j+1] = Definitions::Tail((i,j));
+                                                    }
+                                                }
+
                                                 match game_guard[i][j]{
                                                     Definitions::Tail((i_,j_)) => {game_guard[i][j] = Definitions::Snake((i_,j_));
                                                     flag = true;
@@ -253,6 +290,9 @@ pub fn snake_move(game: &Arc<Mutex<[[Definitions;GAME_LEN];GAME_LEN]>>) {
 
                     }
                         if *card == "west".to_string() {
+                            if j == 0 {
+                                lose();
+                            }
                             if let Definitions::Apple = game_guard[i][j-1] {
                                 game_guard[i][j-1] = Definitions::SnakeHead((i,j));
                                 game_guard[i][j] = Definitions::Snake((i,j-1));
@@ -261,8 +301,22 @@ pub fn snake_move(game: &Arc<Mutex<[[Definitions;GAME_LEN];GAME_LEN]>>) {
                                     for j in 0..GAME_LEN{
                                         if flag == false{
                                         if let Definitions::Tail((_,_)) = game_guard[i][j] {
-                                            if j > 0 && j < GAME_LEN-1{
-                                                game_guard[i][j+1] = Definitions::Tail((i,j));
+                                            if j > 0 && j < GAME_LEN - 1{
+
+                                                if let Definitions::Nothing = game_guard[i][j+1] {
+                                                    game_guard[i][j+1] = Definitions::Tail((i,j));
+                                                }
+                                                else {   
+                                                    if let Definitions::Nothing = game_guard[i-1][j] {
+                                                        game_guard[i-1][j] = Definitions::Tail((i,j));
+                                                    }
+                                                    if let Definitions::Nothing = game_guard[i][j-1] {
+                                                        game_guard[i][j-1] = Definitions::Tail((i,j));
+                                                    }
+                                                    if let Definitions::Nothing = game_guard[i+1][j] {
+                                                        game_guard[i+1][j] = Definitions::Tail((i,j));
+                                                    }
+                                                }
                                                 match game_guard[i][j]{
                                                     Definitions::Tail((i_,j_)) => {game_guard[i][j] = Definitions::Snake((i_,j_));
                                                     flag = true;
@@ -301,16 +355,36 @@ pub fn snake_move(game: &Arc<Mutex<[[Definitions;GAME_LEN];GAME_LEN]>>) {
 
                     }
                         if *card == "east".to_string() {
+
+                            if j == 15{
+                                lose();
+                            }
+
                             if let Definitions::Apple = game_guard[i][j+1] {
+                                
                                 game_guard[i][j+1] = Definitions::SnakeHead((i,j));
                                 game_guard[i][j] = Definitions::Snake((i,j+1));
+                                
                                 let mut flag = false;
                                 for i in 0..GAME_LEN {
                                     for j in 0..GAME_LEN{
                                         if flag == false {
                                         if let Definitions::Tail((_,_)) = game_guard[i][j] {
-                                            if j > 0 && j < GAME_LEN-1{
-                                                game_guard[i][j-1] = Definitions::Tail((i,j));
+                                            if j > 0 && j < GAME_LEN - 1{
+                                                if let Definitions::Nothing = game_guard[i][j-1] {
+                                                    game_guard[i][j-1] = Definitions::Tail((i,j));
+                                                }
+                                                else {   
+                                                    if let Definitions::Nothing = game_guard[i-1][j] {
+                                                        game_guard[i-1][j] = Definitions::Tail((i,j));
+                                                    }
+                                                    if let Definitions::Nothing = game_guard[i][j+1] {
+                                                        game_guard[i][j+1] = Definitions::Tail((i,j));
+                                                    }
+                                                    if let Definitions::Nothing = game_guard[i+1][j] {
+                                                        game_guard[i+1][j] = Definitions::Tail((i,j));
+                                                    }
+                                                }
                                                 match game_guard[i][j]{
                                                     Definitions::Tail((i_,j_)) => {game_guard[i][j] = Definitions::Snake((i_,j_));
                                                     flag = true;

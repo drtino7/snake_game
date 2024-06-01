@@ -1,4 +1,4 @@
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 
 use crate::create_game::GAME_LEN;
 use crate::game_definitions::Definitions;
@@ -9,6 +9,7 @@ pub fn print(game: &Mutex<[[Definitions; GAME_LEN];GAME_LEN]>) {
         for (j,_) in game_guard[i].iter().enumerate() {
             print!("|{}", game_guard[i][j]);
         }
+        print!("|");
         println!("");
     }
 }
